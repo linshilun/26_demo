@@ -2,389 +2,563 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>结果展示</title>
     <style>
+        /* --- 基础和全局样式 --- */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-			background-color: #f4f4f4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: #f4f4f4;
+            line-height: 1.6;
         }
+
+        /* --- 容器 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* --- 标题样式 --- */
         h1 {
-            font-size: 2em; /* 主标题字体大小 */
-			text-align: center;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            color: #333;
+        }
+        h2, h3 {
+            text-align: left;
+            color: #333;
         }
         h2 {
-            font-size: 1.5em; /* 副标题字体大小 */
+            font-size: 1.5em;
+            margin-top: 2em;
+            padding-top: 1em;
+            border-top: 1px solid #eee;
         }
-		h3 {
-            font-size: 1.0em; /* 副标题字体大小 */
+        h3 {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 1.5em;
         }
-        table {
+
+        /* --- 音频播放器样式 --- */
+        audio {
+            width: 100%;
+        }
+
+        /* --- 表格容器，用于横向滚动 --- */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 20px 0;
+        }
+
+        /* --- 响应式表格 --- */
+        .responsive-table {
             width: 100%;
             border-collapse: collapse;
-			margin: auto;
         }
-        th, td {
+
+        .responsive-table th,
+        .responsive-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        .responsive-table th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
             text-align: center;
         }
-        th {
-            background-color: #4CAF50;
-			color: white;
+        
+        .responsive-table td {
+            text-align: left;
         }
-        @media (max-width: 600px) {
-            th, td {
-                font-size: 0.8em; /* 小屏幕字体大小 */
+
+        /* 关键修改：为音频列设置最小宽度 */
+        .responsive-table .col-audio {
+            min-width: 150px;
+        }
+
+        .responsive-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* --- 媒体查询：小屏幕样式 (平板和手机) --- */
+        @media (max-width: 768px) {
+            .table-wrapper {
+                overflow-x: visible; /* 移动端不需要横向滚动 */
+                margin: 0;
+            }
+            .responsive-table thead {
+                display: none;
+            }
+
+            .responsive-table,
+            .responsive-table tbody,
+            .responsive-table tr,
+            .responsive-table td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* 移动端重置音频列的最小宽度 */
+            .responsive-table .col-audio {
+                min-width: auto;
+            }
+
+            .responsive-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                overflow: hidden;
+            }
+
+            .responsive-table td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                padding: 12px;
+                text-align: left;
+            }
+
+            .responsive-table td:last-child {
+                border-bottom: 0;
+            }
+
+            .responsive-table td::before {
+                content: attr(data-label);
+                display: block;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 6px;
             }
         }
     </style>
 </head>
 <body>
-<h1>语音合成大模型结果展示</h1>
-</body>
-<body>
-<h2>1、方案1，模型优化前后对比</h2>
-<h3>a、呼吸声过大过频</h3>
-<table>
-    <tr>
-        <th>Speaker</th>
-        <th>Prompt</th>
-		<th>Input text</th>
-        <th>Result before optimization</th>
-		<th>Result after optimization</th>
-    </tr>
-    <tr>
-        <td>speaker1</td>
-        <td><audio controls><source src="results/s2_vs_s3_breath/ep1/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>我是提倡献血的，因为献血它是一种利他的行为，但绝不能诱导和强制他人去献血。身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
-        <td><audio controls><source src="results/s2_vs_s3_breath/ep1/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_breath/ep1/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-        <td>speaker2</td>
-        <td><audio controls><source src="results/s2_vs_s3_breath/ep2/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>我是提倡献血的，因为献血它是一种利他的行为，但绝不能诱导和强制他人去献血。身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
-        <td><audio controls><source src="results/s2_vs_s3_breath/ep2/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_breath/ep2/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-        <td>speaker3</td>
-        <td><audio controls><source src="results/s2_vs_s3_breath/ep3/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>我是提倡献血的，因为献血它是一种利他的行为，但绝不能诱导和强制他人去献血。身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
-        <td><audio controls><source src="results/s2_vs_s3_breath/ep3/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_breath/ep3/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h3>b、韵律异常</h3>
-<table>
-    <tr>
-        <th>Speaker</th>
-        <th>Prompt</th>
-		<th>Input text</th>
-        <th>Result before optimization</th>
-		<th>Result after optimization</th>
-    </tr>
-    <tr>
-        <td>speaker1</td>
-        <td><audio controls><source src="results/s2_vs_s3_prosody/ep1/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>我是提倡献血的，因为献血它是一种利他的行为。</td>
-        <td><audio controls><source src="results/s2_vs_s3_prosody/ep1/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_prosody/ep1/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-        <td>speaker2</td>
-        <td><audio controls><source src="results/s2_vs_s3_prosody/ep2/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>那些宣称献血能净化血液的说法实际上是对事实片面解读，甚至还声称献血对于降低某些疾病风险的说法更是荒唐！</td>
-        <td><audio controls><source src="results/s2_vs_s3_prosody/ep2/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_prosody/ep2/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-        <td>speaker3</td>
-        <td><audio controls><source src="results/s2_vs_s3_prosody/ep3/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
-        <td><audio controls><source src="results/s2_vs_s3_prosody/ep3/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_prosody/ep3/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h3>c、音量忽大忽小</h3>
-<table>
-    <tr>
-        <th>Speaker</th>
-        <th>Prompt</th>
-		<th>Input text</th>
-        <th>Result before optimization</th>
-		<th>Result after optimization</th>
-    </tr>
-    <tr>
-        <td>speaker1</td>
-        <td><audio controls><source src="results/s2_vs_s3_vol/ep1/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>一个人过来，走到你面前，把一口痰吐到你脚上，你回头就给他一巴掌，这是命。那什么是运？</td>
-        <td><audio controls><source src="results/s2_vs_s3_vol/ep1/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td><audio controls><source src="results/s2_vs_s3_vol/ep1/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-</body>
-<body>
-<h2>2、方案2，zero-shot结果</h2>
-<h3>a、IP音色</h3>
-<table>
-    <tr>
-		<th>Speaker</th>
-        <th>Prompt</th>
-        <th>Input text</th>
-		<th>Synthetic results</th>
-    </tr>
-    <tr>
-		<td>猴哥</td>
-        <td><audio controls><source src="results/f2_zeroshot/ip/1_houge_huankuai_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>凌晨3点，睡不着，准备把猫洗了。因为夏天无毛猫洗澡比较频繁，所以妮妮都已经习惯了。先给它上点沐浴露，虽然我们没头发，但也是要洗头的。然后给他过第一遍水，接下来轮到洗肚子了，看得出妮妮已经很无语了。哎，过完第二遍水后就可以出水了。</td>
-		<td><audio controls><source src="results/f2_zeroshot/ip/1_houge_huankuai_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>黛玉</td>
-		<td><audio controls><source src="results/f2_zeroshot/ip/2_daiyu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>他们都看不起我，偏偏我也不争气，无人扶我凌云志，我自己也上不去，人人都笑话我，偏偏我也最好笑，但凡我有一点本事，也不至于一点本事都没有。</td>
-        <td><audio controls><source src="results/f2_zeroshot/ip/2_daiyu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>容嬷嬷</td>
-		<td><audio controls><source src="results/f2_zeroshot/ip/rongmomo_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>哈哈……看看这些蝼蚁，还在妄图撼动我的铁蹄。天真得可笑！</td>
-        <td><audio controls><source src="results/f2_zeroshot/ip/rongmomo_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h3>b、特定角色</h3>
-<table>
-    <tr>
-		<th>Speaker</th>
-        <th>Prompt</th>
-        <th>Input text</th>
-		<th>Synthetic results</th>
-    </tr>
-    <tr>
-		<td>温柔姐姐</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/8_wenrounv_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>广州的节奏不快，风也总是温柔的。这座城市没有太多张扬，但早晨的云、黄昏的光，还有街边熟悉的烟火味，总能轻轻地，安慰你。如果你也刚好累了，来广州走一走吧，让生活慢一点，心也软一点。</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/8_wenrounv_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>知心哥哥</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/zhixingege_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>在城市中央最古老的图书馆里，在那个很少有人光顾的阁楼上，住着一个戴着圆框眼镜的小男孩，名叫莱奥。他的伙伴并非其他爱看书的孩子，而是一支会自己跳舞的羽毛笔。每当月光透过高高的圆形窗户，洒在落满灰尘的书桌上时，那支羽毛笔就会从墨水瓶旁轻轻立起，在泛黄的纸上为他画下一片星空或一个微笑的月亮。这，是属于他们俩的秘密时光，也是一天中最宁静的魔法。</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/zhixingege_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>慈祥爷爷</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/cixiangyeye_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>呵呵……来，孩子，帮我擦擦这灯罩。想当年啊，这片海上还没有这么多铁皮船，到了晚上，能听见鲸鱼唱歌，那声音啊，像是从海底传来的古老歌谣，悠远得很。</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/cixiangyeye_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>和蔼奶奶</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/heainainai_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>别自责啦，好孩子。守塔的人啊，谁没看错过一次风向。你看，这日志上记下的每一次失误，都让后来的我们能更早地预警风暴。这叫‘经验’，是时间给的最宝贵的礼物。</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/heainainai_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>呆萌娃娃</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/daimengpangwa_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>“天才，我知道你的代码一行就能解决问题，但我还是想用我的笨办法试一试。一个系统的稳定，并不只看谁的技巧更炫。”</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/daimengpangwa_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>调皮公主</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/tiaopigongzhu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>呀！快看，一个秘密花园！这些花儿都睡着了。它们一定是在等待有人来唤醒它们吧？</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/tiaopigongzhu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>客服女声</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/kefu_8k_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>嗯……那您先了解一下，到时候我们再做决定啊，然后我这边加一下您微信，然后跟您分享一下，您看可以吗？嗯，好好好，那稍后呢，我添加一下您微信啊，然后把详细的资料发给您看一下。嗯嗯，嗯，请问一下就是您微信号是这个手机号的对吗？</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/kefu_8k_p2_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>直播男声</td>
-		<td><audio controls><source src="results/f2_zeroshot/juese/zhibo_ahao_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-        <td>好了来看看下一个链接，今天直播间要为大家重点推荐的产品套餐是广州度假村的2天1晚酒店套餐！平日我们的价格可是要1894元的哦，但今天在我们的直播间里2天1晚只要1459元起！是不是超级划算？大家赶紧下单吧！</td>
-        <td><audio controls><source src="results/f2_zeroshot/juese/zhibo_ahao_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h3>c、特定口音</h3>
-<table>
-    <tr>
-		<th>Speaker</th>
-        <th>Prompt</th>
-        <th>Input text</th>
-		<th>Synthetic results</th>
-    </tr>
-    <tr>
-		<td>潮汕口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/chaoshandashu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/chaoshandashu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>四川口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/chuanmeizi_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/chuanmeizi_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>东北口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/dongbeilaotie_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/dongbeilaotie_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>广西口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/guangxibiaoge_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/guangxibiaoge_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>河南口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/henandashu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/henandashu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>天津口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/tianjinxiaoge_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/tianjinxiaoge_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>台湾口音</td>
-        <td><audio controls><source src="results/f2_zeroshot/kouyin/taiwanqiang_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>找一个周末的午后，关掉手机，为自己泡一壶清茶。看茶叶在滚水中缓缓舒展，像一场无声的舞蹈。阳光透过百叶窗，在木地板上投下斑驳的光影，空气里浮动着细小的尘埃和淡淡的茶香。时间仿佛在此刻被拉长，窗外的喧嚣都与你无关。这一刻，世界很小，只容得下一杯茶，一本书，和一个偷得浮生半日闲的你。</td>
-		<td><audio controls><source src="results/f2_zeroshot/kouyin/taiwanqiang_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h3>d、情绪演绎</h3>
-<table>
-    <tr>
-		<th>Speaker</th>
-        <th>Prompt</th>
-        <th>Input text 1</th>
-		<th>Synthetic results 1</th>
-		<th>Input text 2</th>
-		<th>Synthetic results 2</th>
-    </tr>
-    <tr>
-		<td>speaker1</td>
-        <td><audio controls><source src="results/f2_zeroshot/qingxu/honeybee_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>哈哈！怎么着？你也想烧起来吗？</td>
-		<td><audio controls><source src="results/f2_zeroshot/qingxu/honeybee_p2_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>啊？我？可爱？我听别人说过我阴暗，孤僻，难相处，讨厌我...还是第一次听到别人说我可爱。</td>
-		<td><audio controls><source src="results/f2_zeroshot/qingxu/honeybee_p6_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>speaker2</td>
-        <td><audio controls><source src="results/f2_zeroshot/qingxu/yanyi_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>哈哈！怎么着？你也想烧起来吗？</td>
-		<td><audio controls><source src="results/f2_zeroshot/qingxu/yanyi_p2_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>啊？我？可爱？我听别人说过我阴暗，孤僻，难相处，讨厌我...还是第一次听到别人说我可爱。</td>
-		<td><audio controls><source src="results/f2_zeroshot/qingxu/yanyi_p6_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h2>3、方案2，口语结果</h2>
-<table>
-    <tr>
-        <th>Input text</th>
-		<th>Synthetic results</th>
-    </tr>
-    <tr>
-		<td>哈哈，太好了。那今晚你可以安心充电了。对了，充完电有什么打算？想不想继续聊聊天？</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p46_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>嗯，姐，其实都挺喜欢的，每个称呼都有它的味道。不过嘛，如果非得选一个，我可能更喜欢你叫我“妹儿”，感觉特别亲切。你呢？</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p50_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>哎呦，这钱来得不容易啊。那你现在手头宽裕了，是不是打算好好犒劳一下自己？有啥想买的或者想去的地方吗？</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p54_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>咦？我的钥匙去哪儿了？我明明就放在这儿的呀。</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p60_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>嗯…… 那个…… 我觉得吧，嗯…… 这个事儿呢，就是说，嗯…… 可能得再考虑考虑，嗯…… 你懂我意思吧？</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p66_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>我真的很喜欢那个地方，真的，真的。那里的风景，那里的氛围，我真的很喜欢，我真的想再去一次，真的。</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p67_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>俺跟你说嘿，昨儿个俺去串门子，碰上老王家那小子。瞧那熊样，咋咋呼呼的，搁那儿嘚瑟啥嘞！俺寻思着跟他唠两句，谁成想这家伙挺能耐啊，一顿忽悠把俺给忽悠瘸了。</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p103_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>人家不想吃这个啦，你给我买那个甜甜的冰淇淋好不好嘛？</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p107_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>好啦好啦，我的好朋友，你就帮我这个小忙嘛，你最好了，我知道你一定会答应我的对不对？</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p108_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>哼，你这个大坏蛋，不过我还是喜欢你这个大坏蛋啦，快来抱抱我。</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p111_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>雨淅淅沥沥地下着，雨滴打在窗户玻璃上，发出‘滴答、滴答’的声音，偶尔有一阵风吹过，雨滴斜着打在玻璃上，声音变得更加急促。</td>
-		<td><audio controls><source src="results/f2_kouyu/00000263_p130_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
-<h2>4、方案3，audio模块说话人控制结果</h2>
-<table>
-    <tr>
-		<th>Speaker</th>
-        <th>Prompt</th>
-        <th>Input text</th>
-		<th>Synthetic results</th>
-    </tr>
-    <tr>
-		<td>speaker1</td>
-        <td><audio controls><source src="results/f3/pair_1/10002287-00000094.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>简单地说，这相当于惠普把消费领域市场拱手相让了。</td>
-		<td><audio controls><source src="results/f3/pair_1/10002287-00000095_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>speaker2</td>
-        <td><audio controls><source src="results/f3/pair_2/10002298-00000001.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>共同建设面向未来的交通，和出行服务新生态。</td>
-		<td><audio controls><source src="results/f3/pair_2/10002298-00000016_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>speaker3</td>
-        <td><audio controls><source src="results/f3/pair_6/00005477-00000048.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>小鸟请妈妈施展魔法，让小池塘里长出很多很密的水草。</td>
-		<td><audio controls><source src="results/f3/pair_6/00005477-00000079_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>speaker4</td>
-        <td><audio controls><source src="results/f3/pair_7/00005466-00000059.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>妈妈期许用最好的爱来守护自己的宝贝。</td>
-		<td><audio controls><source src="results/f3/pair_7/00005466-00000110_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>speaker5</td>
-        <td><audio controls><source src="results/f3/pair_8/00005429-00000101.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>随后他拎起一根草杆放在鼻子上，头尽量往后仰着。</td>
-		<td><audio controls><source src="results/f3/pair_8/00005429-00000111_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-    <tr>
-		<td>speaker6</td>
-        <td><audio controls><source src="results/f3/pair_9/00005420-00000106.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-		<td>应采儿和妈妈，妈妈逆生长啊，比应采儿还要年轻。</td>
-		<td><audio controls><source src="results/f3/pair_9/00005420-00000054_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
-    </tr>
-</table>
+    <div class="container">
+        <h1>语音合成大模型结果展示</h1>
+
+        <section>
+            <h2>1、方案1，模型优化前后对比</h2>
+            
+            <h3>a、呼吸声过大过频</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Result before optimization</th>
+                            <th class="col-audio">Result after optimization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">speaker1</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep1/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">我是提倡献血的，因为献血它是一种利他的行为，但绝不能诱导和强制他人去献血。身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep1/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep1/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker2</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep2/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">我是提倡献血的，因为献血它是一种利他的行为，但绝不能诱导和强制他人去献血。身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep2/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep2/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker3</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep3/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">我是提倡献血的，因为献血它是一种利他的行为，但绝不能诱导和强制他人去献血。身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep3/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_breath/ep3/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>b、韵律异常</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Result before optimization</th>
+                            <th class="col-audio">Result after optimization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">speaker1</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep1/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">我是提倡献血的，因为献血它是一种利他的行为。</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep1/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep1/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker2</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep2/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">那些宣称献血能净化血液的说法实际上是对事实片面解读，甚至还声称献血对于降低某些疾病风险的说法更是荒唐！</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep2/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep2/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker3</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep3/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">身体的每一滴血都是宝贵的，它还在体内承担着运输营养、二氧化碳和代谢等重要的任务。</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep3/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_prosody/ep3/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>c、音量忽大忽小</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Result before optimization</th>
+                            <th class="col-audio">Result after optimization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">speaker1</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/s2_vs_s3_vol/ep1/prompt.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">一个人过来，走到你面前，把一口痰吐到你脚上，你回头就给他一巴掌，这是命。那什么是运？</td>
+                            <td data-label="Result before optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_vol/ep1/s2.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Result after optimization" class="col-audio"><audio controls><source src="results/s2_vs_s3_vol/ep1/s3.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>2、方案2，zero-shot结果</h2>
+            
+            <h3>a、IP音色</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Synthetic results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">猴哥</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/ip/1_houge_huankuai_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">凌晨3点，睡不着，准备把猫洗了。因为夏天无毛猫洗澡比较频繁，所以妮妮都已经习惯了。先给它上点沐浴露，虽然我们没头发，但也是要洗头的。然后给他过第一遍水，接下来轮到洗肚子了，看得出妮妮已经很无语了。哎，过完第二遍水后就可以出水了。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/ip/1_houge_huankuai_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">黛玉</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/ip/2_daiyu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">他们都看不起我，偏偏我也不争气，无人扶我凌云志，我自己也上不去，人人都笑话我，偏偏我也最好笑，但凡我有一点本事，也不至于一点本事都没有。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/ip/2_daiyu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">容嬷嬷</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/ip/rongmomo_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">哈哈……看看这些蝼蚁，还在妄图撼动我的铁蹄。天真得可笑！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/ip/rongmomo_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>b、特定角色</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Synthetic results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">温柔姐姐</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/8_wenrounv_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">广州的节奏不快，风也总是温柔的。这座城市没有太多张扬，但早晨的云、黄昏的光，还有街边熟悉的烟火味，总能轻轻地，安慰你。如果你也刚好累了，来广州走一走吧，让生活慢一点，心也软一点。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/8_wenrounv_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">知心哥哥</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/zhixingege_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">在城市中央最古老的图书馆里，在那个很少有人光顾的阁楼上，住着一个戴着圆框眼镜的小男孩，名叫莱奥。他的伙伴并非其他爱看书的孩子，而是一支会自己跳舞的羽毛笔。每当月光透过高高的圆形窗户，洒在落满灰尘的书桌上时，那支羽毛笔就会从墨水瓶旁轻轻立起，在泛黄的纸上为他画下一片星空或一个微笑的月亮。这，是属于他们俩的秘密时光，也是一天中最宁静的魔法。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/zhixingege_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">慈祥爷爷</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/cixiangyeye_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">呵呵……来，孩子，帮我擦擦这灯罩。想当年啊，这片海上还没有这么多铁皮船，到了晚上，能听见鲸鱼唱歌，那声音啊，像是从海底传来的古老歌谣，悠远得很。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/cixiangyeye_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">和蔼奶奶</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/heainainai_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">别自责啦，好孩子。守塔的人啊，谁没看错过一次风向。你看，这日志上记下的每一次失误，都让后来的我们能更早地预警风暴。这叫‘经验’，是时间给的最宝贵的礼物。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/heainainai_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">呆萌娃娃</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/daimengpangwa_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">“天才，我知道你的代码一行就能解决问题，但我还是想用我的笨办法试一试。一个系统的稳定，并不只看谁的技巧更炫。”</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/daimengpangwa_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">调皮公主</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/tiaopigongzhu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">呀！快看，一个秘密花园！这些花儿都睡着了。它们一定是在等待有人来唤醒它们吧？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/tiaopigongzhu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">客服女声</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/kefu_8k_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">嗯……那您先了解一下，到时候我们再做决定啊，然后我这边加一下您微信，然后跟您分享一下，您看可以吗？嗯，好好好，那稍后呢，我添加一下您微信啊，然后把详细的资料发给您看一下。嗯嗯，嗯，请问一下就是您微信号是这个手机号的对吗？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/kefu_8k_p2_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">直播男声</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/zhibo_ahao_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好了来看看下一个链接，今天直播间要为大家重点推荐的产品套餐是广州度假村的2天1晚酒店套餐！平日我们的价格可是要1894元的哦，但今天在我们的直播间里2天1晚只要1459元起！是不是超级划算？大家赶紧下单吧！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/juese/zhibo_ahao_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>c、特定口音</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Synthetic results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">潮汕口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/chaoshandashu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/chaoshandashu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">四川口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/chuanmeizi_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/chuanmeizi_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">东北口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/dongbeilaotie_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/dongbeilaotie_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">广西口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/guangxibiaoge_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/guangxibiaoge_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">河南口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/henandashu_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/henandashu_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">天津口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/tianjinxiaoge_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">好家伙，这才干净了几天，又把自己弄成这个鬼样子！你看你这个下巴，黑得跟刚从煤矿回来一样。走，我带你去照照镜子，让你看看自己的尊容！别躲了，今天必须给你清理干净，不然强迫症真的受不了。过来，让我看看，哎哟，还挺顽固的嘛！</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/tianjinxiaoge_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">台湾口音</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/taiwanqiang_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">找一个周末的午后，关掉手机，为自己泡一壶清茶。看茶叶在滚水中缓缓舒展，像一场无声的舞蹈。阳光透过百叶窗，在木地板上投下斑驳的光影，空气里浮动着细小的尘埃和淡淡的茶香。时间仿佛在此刻被拉长，窗外的喧嚣都与你无关。这一刻，世界很小，只容得下一杯茶，一本书，和一个偷得浮生半日闲的你。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_zeroshot/kouyin/taiwanqiang_p1_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>d、情绪演绎</h3>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text 1</th>
+                            <th class="col-audio">Synthetic results 1</th>
+                            <th>Input text 2</th>
+                            <th class="col-audio">Synthetic results 2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">speaker1</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/qingxu/honeybee_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text 1">哈哈！怎么着？你也想烧起来吗？</td>
+                            <td data-label="Synthetic results 1" class="col-audio"><audio controls><source src="results/f2_zeroshot/qingxu/honeybee_p2_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text 2">啊？我？可爱？我听别人说过我阴暗，孤僻，难相处，讨厌我...还是第一次听到别人说我可爱。</td>
+                            <td data-label="Synthetic results 2" class="col-audio"><audio controls><source src="results/f2_zeroshot/qingxu/honeybee_p6_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker2</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f2_zeroshot/qingxu/yanyi_cut3sel2ar.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text 1">哈哈！怎么着？你也想烧起来吗？</td>
+                            <td data-label="Synthetic results 1" class="col-audio"><audio controls><source src="results/f2_zeroshot/qingxu/yanyi_p2_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text 2">啊？我？可爱？我听别人说过我阴暗，孤僻，难相处，讨厌我...还是第一次听到别人说我可爱。</td>
+                            <td data-label="Synthetic results 2" class="col-audio"><audio controls><source src="results/f2_zeroshot/qingxu/yanyi_p6_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>3、方案2，口语结果</h2>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Input text</th>
+                            <th class="col-audio">Synthetic results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Input text">哈哈，太好了。那今晚你可以安心充电了。对了，充完电有什么打算？想不想继续聊聊天？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p46_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">嗯，姐，其实都挺喜欢的，每个称呼都有它的味道。不过嘛，如果非得选一个，我可能更喜欢你叫我“妹儿”，感觉特别亲切。你呢？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p50_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">哎呦，这钱来得不容易啊。那你现在手头宽裕了，是不是打算好好犒劳一下自己？有啥想买的或者想去的地方吗？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p54_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">咦？我的钥匙去哪儿了？我明明就放在这儿的呀。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p60_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">嗯…… 那个…… 我觉得吧，嗯…… 这个事儿呢，就是说，嗯…… 可能得再考虑考虑，嗯…… 你懂我意思吧？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p66_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">我真的很喜欢那个地方，真的，真的。那里的风景，那里的氛围，我真的很喜欢，我真的想再去一次，真的。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p67_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">俺跟你说嘿，昨儿个俺去串门子，碰上老王家那小子。瞧那熊样，咋咋呼呼的，搁那儿嘚瑟啥嘞！俺寻思着跟他唠两句，谁成想这家伙挺能耐啊，一顿忽悠把俺给忽悠瘸了。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p103_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">人家不想吃这个啦，你给我买那个甜甜的冰淇淋好不好嘛？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p107_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">好啦好啦，我的好朋友，你就帮我这个小忙嘛，你最好了，我知道你一定会答应我的对不对？</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p108_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">哼，你这个大坏蛋，不过我还是喜欢你这个大坏蛋啦，快来抱抱我。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p111_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Input text">雨淅淅沥沥地下着，雨滴打在窗户玻璃上，发出‘滴答、滴答’的声音，偶尔有一阵风吹过，雨滴斜着打在玻璃上，声音变得更加急促。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f2_kouyu/00000263_p130_output.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>4、方案3，audio模块说话人控制结果</h2>
+            <div class="table-wrapper">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Speaker</th>
+                            <th class="col-audio">Prompt</th>
+                            <th>Input text</th>
+                            <th class="col-audio">Synthetic results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Speaker">speaker1</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f3/pair_1/10002287-00000094.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">简单地说，这相当于惠普把消费领域市场拱手相让了。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f3/pair_1/10002287-00000095_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker2</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f3/pair_2/10002298-00000001.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">共同建设面向未来的交通，和出行服务新生态。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f3/pair_2/10002298-00000016_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker3</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f3/pair_6/00005477-00000048.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">小鸟请妈妈施展魔法，让小池塘里长出很多很密的水草。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f3/pair_6/00005477-00000079_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker4</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f3/pair_7/00005466-00000059.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">妈妈期许用最好的爱来守护自己的宝贝。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f3/pair_7/00005466-00000110_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker5</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f3/pair_8/00005429-00000101.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">随后他拎起一根草杆放在鼻子上，头尽量往后仰着。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f3/pair_8/00005429-00000111_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Speaker">speaker6</td>
+                            <td data-label="Prompt" class="col-audio"><audio controls><source src="results/f3/pair_9/00005420-00000106.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                            <td data-label="Input text">应采儿和妈妈，妈妈逆生长啊，比应采儿还要年轻。</td>
+                            <td data-label="Synthetic results" class="col-audio"><audio controls><source src="results/f3/pair_9/00005420-00000054_syn.wav" type="audio/wav">您的浏览器不支持音频元素。</audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
